@@ -116,7 +116,7 @@ image-forgery-detection/
 ├── ui/                            theme.py · components.py · state.py
 ├── views/                         home · upload · forensics · results · performance · about
 ├── tests/                         pytest suite
-├── checkpoints/forensic_unet_best.pt   trained weights
+├── checkpoints/                   trained weights (stored as 5 MB parts, rebuilt on first load)
 ├── reports/                       generated metrics, history, example predictions
 ├── assets/                        design reference + labelled example images
 └── data/                          datasets (git-ignored, see data/README.md)
@@ -163,7 +163,11 @@ CoMoFoD after a manual download, are in [`data/README.md`](data/README.md).
 
 ## 7. Model setup & training
 
-The trained checkpoint is `checkpoints/forensic_unet_best.pt`. To reproduce it:
+The trained checkpoint is `checkpoints/forensic_unet_best.pt` (55 MB). In the GitHub repository it is
+stored as twelve 5 MB parts (`forensic_unet_best.pt.part1` … `part12`) plus a SHA-256 file; the app joins
+them automatically on first load and refuses a corrupt result. Nothing needs to be done by hand.
+
+To reproduce the checkpoint:
 
 ```powershell
 python -m training.train --epochs 10 --batch-size 8
