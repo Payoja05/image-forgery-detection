@@ -1,0 +1,24 @@
+[theme]
+base = "light"
+primaryColor = "#4F7CA8"
+backgroundColor = "#FAF7F0"
+secondaryBackgroundColor = "#F3EDE4"
+textColor = "#292929"
+borderColor = "#D8D0C7"
+showWidgetBorder = true
+baseRadius = "6px"
+font = "'Nunito Sans':https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap, sans-serif"
+headingFont = "'Patrick Hand':https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap, 'Segoe Print', cursive"
+
+[theme.sidebar]
+backgroundColor = "#F4E6DF"
+secondaryBackgroundColor = "#FAF7F0"
+
+[server]
+maxUploadSize = 10
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"

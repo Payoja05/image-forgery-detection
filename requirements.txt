@@ -1,0 +1,10 @@
+# Install PyTorch CPU wheels first (smaller download, no CUDA needed):
+#   pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+# (for an NVIDIA GPU, use the matching CUDA index from pytorch.org instead)
+torch==2.14.1
+streamlit==1.65.0
+opencv-python-headless==5.0.0.93
+numpy==2.5.2
+pillow==12.3.0
+matplotlib==3.11.2
+pytest==9.1.1

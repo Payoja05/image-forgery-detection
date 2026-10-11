@@ -1,0 +1,34 @@
+[
+  {
+    "file": "test_00000.jpg",
+    "mask": "test_00000_mask.png",
+    "label": "Authentic",
+    "type": "authentic",
+    "type_label": "no edit",
+    "source": "synthetic test split; derived from Oxford-IIIT Pet (CC BY-SA 4.0)"
+  },
+  {
+    "file": "test_00013.jpg",
+    "mask": "test_00013_mask.png",
+    "label": "Manipulated",
+    "type": "copy_move",
+    "type_label": "Copy-Move",
+    "source": "synthetic test split; derived from Oxford-IIIT Pet (CC BY-SA 4.0)"
+  },
+  {
+    "file": "test_00002.png",
+    "mask": "test_00002_mask.png",
+    "label": "Manipulated",
+    "type": "splice_object",
+    "type_label": "Splicing (object)",
+    "source": "synthetic test split; derived from Oxford-IIIT Pet (CC BY-SA 4.0)"
+  },
+  {
+    "file": "test_00006.jpg",
+    "mask": "test_00006_mask.png",
+    "label": "Manipulated",
+    "type": "splice_region",
+    "type_label": "Splicing (region)",
+    "source": "synthetic test split; derived from Oxford-IIIT Pet (CC BY-SA 4.0)"
+  }
+]
