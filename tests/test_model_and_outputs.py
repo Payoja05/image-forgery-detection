@@ -6,7 +6,7 @@ import torch
 
 from inference.forgery_detector import ForgeryDetector
 from inference.localization import image_level_score, mask_from_probability, predict_probability_map
-from models.model_loader import ModelLoadError, load_model, save_checkpoint
+from models.model_loader import ModelLoadError, assemble_from_parts, load_model, save_checkpoint
 from models.unet import ForensicUNet
 from utils.report_export import build_report, png_bytes, report_json_bytes
 from visualization.overlays import blend_heatmap, heatmap, overlay_mask
@@ -111,3 +111,23 @@ def test_json_report(tiny_checkpoint, natural_rgb):
     no_model = build_report("y.png", {}, None, model_error="weights missing")
     assert no_model["deep_learning"] == {"available": False, "reason": "weights missing"}
     assert png_bytes(det.mask)[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+def test_checkpoint_reassembled_from_parts(tiny_checkpoint, tmp_path):
+    import hashlib
+    data = tiny_checkpoint.read_bytes()
+    target = tmp_path / "split.pt"
+    third = len(data) // 3 + 1
+    for i in range(3):
+        (tmp_path / f"split.pt.part{i + 1}").write_bytes(data[i * third:(i + 1) * third])
+    (tmp_path / "split.pt.sha256").write_text(hashlib.sha256(data).hexdigest())
+    model, meta = load_model(target, torch.device("cpu"))     # assembles automatically
+    assert target.read_bytes() == data and meta["image_threshold"] == 0.6
+    assert not assemble_from_parts(target)                    # no-op once the file exists
+
+
+def test_corrupt_parts_rejected(tiny_checkpoint, tmp_path):
+    (tmp_path / "bad.pt.part1").write_bytes(tiny_checkpoint.read_bytes()[:1000])
+    (tmp_path / "bad.pt.sha256").write_text("0" * 64)
+    with pytest.raises(ModelLoadError, match="SHA-256"):
+        load_model(tmp_path / "bad.pt")

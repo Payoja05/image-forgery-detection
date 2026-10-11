@@ -5,3 +5,5 @@ __pycache__/
 data/*
 !data/README.md
 reports/*.log
+# the full checkpoint is rebuilt from checkpoints/*.part* on first load
+checkpoints/*.pt

@@ -1,6 +1,7 @@
 """Loading the trained ForensicUNet checkpoint with clear error messages."""
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import torch
@@ -22,8 +23,27 @@ def save_checkpoint(model: ForensicUNet, path: Path, meta: dict) -> None:
     torch.save({"arch": ForensicUNet.ARCH_NAME, "state_dict": model.state_dict(), "meta": meta}, path)
 
 
+def assemble_from_parts(path: Path) -> bool:
+    """Rebuild `<name>.pt` from `<name>.pt.part1..N` if only the parts exist.
+
+    The checkpoint is stored in ~5 MB parts in the GitHub repository because
+    single large uploads kept failing; `<name>.pt.sha256` guards the result.
+    Returns True if the file was assembled.
+    """
+    parts = sorted(path.parent.glob(path.name + ".part*"), key=lambda p: int(p.suffix.removeprefix(".part")))
+    if path.exists() or not parts:
+        return False
+    data = b"".join(p.read_bytes() for p in parts)
+    digest_file = path.with_name(path.name + ".sha256")
+    if digest_file.exists() and hashlib.sha256(data).hexdigest() != digest_file.read_text().strip():
+        raise ModelLoadError(f"Checkpoint parts for '{path.name}' are incomplete or corrupt (SHA-256 mismatch).")
+    path.write_bytes(data)
+    return True
+
+
 def load_model(path: str | Path = CHECKPOINT_PATH, device: torch.device | None = None) -> tuple[ForensicUNet, dict]:
     path = Path(path)
+    assemble_from_parts(path)
     if not path.exists():
         raise ModelLoadError(
             f"Model weights not found at '{path}'. Train the model with "
